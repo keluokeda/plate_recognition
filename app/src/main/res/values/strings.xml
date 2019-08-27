@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">慧号通开发包</string>
+    <string name="company_name">Beijing Eparking Technology Co.</string>
+    
+    <string name="active_button">序列号激活</string>
+    <string name="take_pic_button">拍照识别</string>
+    <string name="automatic_recog_button">视频识别</string>
+    <string name="select_pic_button">选择识别</string>
+
+    <string name="dialog_title">序列号授权-联网请在此填写序列号激活，不区分大小写</string>
+    <string name="license_verification">在线激活</string>
+
+    <string name="plateid_result">识别结果</string>
+    <string name="plate_id">车牌号码:</string>
+    <string name="plate_color">车牌颜色:</string>
+    <string name="confirm">确定</string>
+
+</resources>
