@@ -1,6 +1,7 @@
 package com.kernal.plateid
 
 import android.support.v4.app.FragmentActivity
+import com.kernal.plateid.model.PlateRecognitionResult
 import io.reactivex.Observable
 
 class RxPlateRecognition(activity: FragmentActivity) {
@@ -23,7 +24,7 @@ class RxPlateRecognition(activity: FragmentActivity) {
     }
 
 
-    fun start(code: String): Observable<String> {
+    fun start(code: String): Observable<PlateRecognitionResult> {
 
 
         delegateFragment.start(code)

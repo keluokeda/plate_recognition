@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,6 +37,7 @@ import com.kernal.plateid.activity.PlateidCameraActivity;
 import com.kernal.plateid.controller.CommonTools;
 import com.kernal.plateid.controller.ImportPicRecog;
 import com.kernal.plateid.controller.SNandTFAuth;
+import com.kernal.plateid.model.PlateRecognitionResult;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -99,10 +101,14 @@ public class PlateidMainActivity extends FragmentActivity implements View.OnClic
                 new RxPlateRecognition(PlateidMainActivity.this)
                         .start("QMVPAMLUZYBFCGF")
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<String>() {
+                        .subscribe(new Consumer<PlateRecognitionResult>() {
                             @Override
-                            public void accept(String s) throws Exception {
-                                log(s);
+                            public void accept(PlateRecognitionResult s) throws Exception {
+                                log(s.toString());
+
+                                ImageView imageView = findViewById(R.id.plate);
+
+                                imageView.setImageBitmap(base64ToBitmap(s.getBase64Data()));
 
                             }
                         }, new Consumer<Throwable>() {
@@ -116,6 +122,13 @@ public class PlateidMainActivity extends FragmentActivity implements View.OnClic
         });
 
     }
+
+    private Bitmap base64ToBitmap(String base64String) {
+        byte[] decode = Base64.decode(base64String, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decode, 0, decode.length);
+        return bitmap;
+    }
+
 
     private void log(String message) {
         Log.e("TAG", message);
@@ -193,53 +206,53 @@ public class PlateidMainActivity extends FragmentActivity implements View.OnClic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1 && resultCode == RESULT_OK) {
-//            if (data != null) {
-//                //获取到的识别结果
-//                String[] recogResult = data.getStringArrayExtra("RecogResult");
-//                //保存图片路径
-//                String savePicturePath = data.getStringExtra("savePicturePath");
-//                //是竖屏还是横屏
-//                int screenDirection = data.getIntExtra("screenDirection", 0);
-//                startLinearLayout.setVisibility(View.GONE);
-//                endRelativeLayout.setVisibility(View.VISIBLE);
-//                Bitmap bitmap;
-//                int left, top, w, h;//设置现在图片的区域
-//
-//                if (recogResult[0] != null && !"".equals(recogResult[0])) {
-//                    left = Integer.valueOf(recogResult[7]);
-//                    top = Integer.valueOf(recogResult[8]);
-//                    w = Integer.valueOf(recogResult[9])
-//                            - Integer.valueOf(recogResult[7]);
-//                    h = Integer.valueOf(recogResult[10])
-//                            - Integer.valueOf(recogResult[8]);
-//                    plateId.setText(recogResult[0]);
-//                    plateColor.setText(recogResult[1]);
-//                } else {
-//                    if (screenDirection == 1 || screenDirection == 3) {
-//                        left = coreSetup.preHeight / 24;
-//                        top = coreSetup.preWidth / 4;
-//                        w = coreSetup.preHeight / 24 + coreSetup.preHeight * 11 / 12;
-//                        h = coreSetup.preWidth / 3;
-//                    } else {
-//                        left = coreSetup.preWidth / 4;
-//                        top = coreSetup.preHeight / 4;
-//                        w = coreSetup.preWidth / 2;
-//                        h = coreSetup.preHeight - coreSetup.preHeight / 2;
-//                    }
-//                    plateId.setText("null");
-//                    plateColor.setText("null");
-//                }
-//                bitmap = BitmapFactory.decodeFile(savePicturePath);
-//                if (bitmap != null) {
-//                    bitmap = Bitmap.createBitmap(bitmap, left, top, w, h);
-//                    plateImage.setImageBitmap(bitmap);
-//                }
-//            }
-//        } else {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            if (data != null) {
+                //获取到的识别结果
+                String[] recogResult = data.getStringArrayExtra("RecogResult");
+                //保存图片路径
+                String savePicturePath = data.getStringExtra("savePicturePath");
+                //是竖屏还是横屏
+                int screenDirection = data.getIntExtra("screenDirection", 0);
+                startLinearLayout.setVisibility(View.GONE);
+                endRelativeLayout.setVisibility(View.VISIBLE);
+                Bitmap bitmap;
+                int left, top, w, h;//设置现在图片的区域
+
+                if (recogResult[0] != null && !"".equals(recogResult[0])) {
+                    left = Integer.valueOf(recogResult[7]);
+                    top = Integer.valueOf(recogResult[8]);
+                    w = Integer.valueOf(recogResult[9])
+                            - Integer.valueOf(recogResult[7]);
+                    h = Integer.valueOf(recogResult[10])
+                            - Integer.valueOf(recogResult[8]);
+                    plateId.setText(recogResult[0]);
+                    plateColor.setText(recogResult[1]);
+                } else {
+                    if (screenDirection == 1 || screenDirection == 3) {
+                        left = coreSetup.preHeight / 24;
+                        top = coreSetup.preWidth / 4;
+                        w = coreSetup.preHeight / 24 + coreSetup.preHeight * 11 / 12;
+                        h = coreSetup.preWidth / 3;
+                    } else {
+                        left = coreSetup.preWidth / 4;
+                        top = coreSetup.preHeight / 4;
+                        w = coreSetup.preWidth / 2;
+                        h = coreSetup.preHeight - coreSetup.preHeight / 2;
+                    }
+                    plateId.setText("null");
+                    plateColor.setText("null");
+                }
+                bitmap = BitmapFactory.decodeFile(savePicturePath);
+                if (bitmap != null) {
+                    bitmap = Bitmap.createBitmap(bitmap, left, top, w, h);
+                    plateImage.setImageBitmap(bitmap);
+                }
+            }
+        } else {
 //            if (data != null) {
 //                Uri uri = data.getData();
-//                String picPathString = CommonTools.getPath(PlateidMainActivity.this, uri);
+//                String picPathString = CommonTools.getBase64Data(PlateidMainActivity.this, uri);
 //                //初始化和识别接口要有一个时间段，所以将初始化放在了上面，这里要注意下
 //                //传入图片识别获取结果
 //                String[] recogResult = importPicRecog.recogPicResults(picPathString);
@@ -250,7 +263,7 @@ public class PlateidMainActivity extends FragmentActivity implements View.OnClic
 //                Bitmap bitmap = BitmapFactory.decodeFile(picPathString);
 //                plateImage.setImageBitmap(bitmap);
 //            }
-//        }
+        }
     }
 
 

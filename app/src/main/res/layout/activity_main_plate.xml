@@ -41,6 +41,11 @@
             android:layout_height="wrap_content"
             android:text="rx识别" />
 
+        <ImageView
+            android:id="@+id/plate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
     </LinearLayout>
 
     <RelativeLayout
